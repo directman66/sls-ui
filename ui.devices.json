@@ -1,0 +1,87 @@
+[
+{"id": 11, "room_id":1, "ieee":"0x00124B001EC83D62", "prop":"state_l6", "title":"Прихожая", "type":"switch"},
+{"id": 12, "room_id":1, "ieee":"0x00124B001EC83D62", "prop":"state_l7", "title":"Гардероб", "type":"switch"},
+{"id": 13, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l4", "title":"Коридор", "type":"switch"},
+{"id": 14, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l3", "title":"Зона для чтения ;-)", "type":"switch"},
+{"id": 15, "room_id":1, "ieee":"0x00124B001EC80F20", "prop":"state_l1", "title":"Душевая", "type":"switch"},
+{"id": 16, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l6", "title":"Лестница 1-2", "type":"switch"},
+{"id": 17, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l5", "title":"Лестница 2-3", "type":"switch"},
+
+
+
+{"id": 21, "room_id":2, "ieee":"0x00158D00036C1508", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 22, "room_id":2, "ieee":"0x00158D00036C1508", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 23, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l4", "title":"Обеденная зона", "type":"switch"},
+{"id": 24, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l5", "title":"Подсветка зоны готовки", "type":"switch"},
+{"id": 26, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l3", "title":"Подсветка фартука", "type":"switch"},
+{"id": 29, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l7", "title":"Гостевая зона", "type":"switch"},
+{"id": 210, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l8", "title":"Телевизор","type":"switch"},
+
+{"id": 27, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l6", "title":"Остров", "type":"switch"},
+{"id": 25, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l2", "title":"Терасса", "type":"switch"},
+
+{"id": 211, "room_id":2, "ieee":"0x5C0272FFFECAAC69", "prop":"position", "title":"Шторы 2", "type":"dimmer", "min":0, "max":100},
+
+
+
+
+{"id": 27, "room_id":3, "ieee":"0xEC1BBDFFFE90EAA9", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
+
+
+
+{"id": 41, "room_id":4, "ieee":"0x00158D000346B825", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 42, "room_id":4, "ieee":"0x00158D000346B825", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 43, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l2", "title":"Свет Анюта", "type":"switch"},
+{"id": 44, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l1", "title":"Свет Софа", "type":"switch"},
+{"id": 45, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l1", "title":"Свет Общий", "type":"switch"},
+{"id": 46, "room_id":4, "ieee":"0x00158D0003E7BC74", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
+{"id": 47, "room_id":4, "ieee":"0x00158D0003E7BC69", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
+{"id": 48, "room_id":4, "ieee":"0x00158D000346B825", "prop":"pressure", "title":"Давление", "type":"sensor", "icon":"fa-tachometer", "unit":"kPa"},
+
+
+{"id": 51, "room_id":5, "ieee":"0x00158D0001A2E891", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 52, "room_id":5, "ieee":"0x00158D0001A2E891", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 53, "room_id":5, "ieee":"0x00124B001EC84F3C", "prop":"state_l7", "title":"Свет 1", "type":"switch"},
+{"id": 54, "room_id":5, "ieee":"0x00124B001EC84F3C", "prop":"state_l8", "title":"Свет 2", "type":"switch"},
+{"id": 55, "room_id":5, "ieee":"0x00124B001F7CA144", "prop":"state_l7", "title":"Шкаф", "type":"switch"},
+{"id": 56, "room_id":5, "ieee":"0x00124B001F7CA144", "prop":"state_l6", "title":"Сан.узел", "type":"switch"},
+{"id": 57, "room_id":5, "ieee":"0x00158D0002EE1285", "prop":"position", "title":"Шторы 1", "type":"dimmer", "min":0, "max":100},
+
+
+
+
+{"id": 61,  "room_id":6, "ieee":"0x00158D0001A2D2FE", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 62,  "room_id":6, "ieee":"0x00158D0001A2D2FE", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 63,  "room_id":6, "ieee":"0x00158D00039773C8", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
+{"id": 64,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l1", "title":"Чил-аут", "type":"switch"},
+{"id": 65,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l2", "title":"Леха 2", "type":"switch"},
+{"id": 66,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l3", "title":"Сауна", "type":"switch"},
+{"id": 67,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l4", "title":"Леха 1", "type":"switch"},
+{"id": 68,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l5", "title":"Вентиляция", "type":"switch"},
+{"id": 69,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l6", "title":"1", "type":"switch"},
+{"id": 610, "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l7", "title":"2", "type":"switch"},
+{"id": 611, "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l8", "title":"3", "type":"switch"},
+
+
+
+
+{"id": 81, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l3", "title":"Ванная комната", "type":"switch"},
+{"id": 82, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l5", "title":"Коридор", "type":"switch"},
+{"id": 83, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l4", "title":"Кабинет", "type":"switch"},
+
+
+{"id": 101, "room_id":10, "ieee":"0xBC33ACFFFE501BAE", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 102, "room_id":10, "ieee":"0xBC33ACFFFE501BAE", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 103, "room_id":10, "ieee":"0x00124B001EC83D62", "prop":"state_l4", "title":"Гараж", "type":"switch"},
+{"id": 104, "room_id":10, "ieee":"0x00124B001EC83D62", "prop":"state_l2", "title":"Котельная", "type":"switch"},
+
+
+{"id": 111, "room_id":11, "ieee":"0x00124B001EC80F20", "prop":"state_l2", "title":"Терасса", "type":"switch"},
+{"id": 112, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l5", "title":"Вход", "type":"switch"},
+{"id": 113, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l3", "title":"Вьезд", "type":"switch"},
+{"id": 114, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l1", "title":"Улица со стороны котельной", "type":"switch"},
+
+
+{"id": 120, "room_id":12, "ieee":"0x00124B001F7CA144", "prop":"alarm", "title":"Сигнализация", "type":"switch"}
+
+]
