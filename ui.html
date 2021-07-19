@@ -1,163 +1,217 @@
-
 <html>
+<!--описание
+комнаты вписываются в файл ui.rooms.json в виде JSON строки
+пример файла ui.rooms.json
+(id комнат должны быть уникальны)
+
+[
+{"id": 0, "title":"Режимы"},
+{"id": 1, "title":"Гостиная"},
+{"id": 2, "title":"Кухня"},
+{"id": 3, "title":"Спальня"},
+{"id": 4, "title":"Ванная"},
+{"id": 5, "title":"Коридор"},
+{"id": 6, "title":"Лоджия"}
+]
+
+Устройства, выводимые в интерфейс, размещаются в файле ui.devices.json в виде JSON строки.
+
+id - id девайса (уникальные во всём списке)
+room_id - id комнаты из списка выше
+ieee - ieeeAddr со страницы девайсов (object для использования объектов)
+prop - свойство, которое будет выводиться/управляться данным элементом (имя объекта, для использования совместно с object)
+title - заголовок девайса
+type - тип устройства (пока в наличии 4 типа):
+-- sensor - обыкновенный цифровой сенсор
+-- bin-sensor - двоичный сенсор (true/false дд, датчик положения, дачик открытия)
+-- switch - тумблер
+-- dimmer - слайдер
+icon - иконка девайса (пока поддерживается для sensor, bin-sensor, иконки брать тут https://fontawesome.com/v4.7.0/icons/)
+unit - единица измерения (для типа sensor)
+sw_type - тип выключателя (для типа switch)
+-- normal (default, ON/OFF)
+-- bool (true/false)
+-- bin (1/0)
+min - минимальное значение (для типа dimmer)
+max - максимальное значение (для типа dimmer)
+
+пример файла ui.devices.json
+[
+{"id": 1, "room_id":0, "ieee":"object", "prop":"gateway.security.status", "title":"Режим охраны", "type":"switch"},
+{"id": 2, "room_id":0, "ieee":"object", "prop":"gateway.eco.status", "title":"Режим экономии", "type":"switch"},
+{"id": 3, "room_id":0, "ieee":"object", "prop":"gateway.light.auto_on.status", "title":"Авто включение света", "type":"switch"},
+{"id": 11, "room_id":1, "ieee":"0x00158D00023D2E19", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
+{"id": 12, "room_id":1, "ieee":"0x00158D00023D2E19", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
+{"id": 13, "room_id":1, "ieee":"0x00158D0004863605", "prop":"state_right", "title":"Свет", "type":"switch"},
+{"id": 14, "room_id":1, "ieee":"0x00158D000396432E", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
+{"id": 21, "room_id":2, "ieee":"0x00158D0004863605", "prop":"state_left", "title":"Свет", "type":"switch"},
+{"id": 22, "room_id":2, "ieee":"0x00124B001D43CE20", "prop":"state", "title":"Подсветка шкафа", "type":"switch"},
+{"id": 23, "room_id":2, "ieee":"0x00124B001D43CE20", "prop":"brightness", "title":"Яркость подсветки шкафа", "type":"dimmer", "min":0, "max":255},
+]
+описание-->
 <head>
-<link rel=icon href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/svgs/solid/home.svg>
 <meta charset="utf-8">
+<title>SLS UI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="SLS UI"> 
+
+<link rel="icon" href="https://cdn.slsys.io/assets/2021.01.10d1/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous"> 
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </head>
-<body id="page-top">
+<body id="page-top" class="bg-dark body_shadow">
 
 <style>
-body {
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-    background-color: #333;
-    padding-top: 30px;
-}
-.fa {
-    font-size: 13px;
-}
+.body_shadow {box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);}
 .form-switch {padding-bottom: 7px;}
-.card-cont {padding-bottom: 15px;}
+.fade {backdrop-filter: blur(4px);}
+.card-cont {padding-bottom: calc(var(--bs-gutter-x) / 2);}
 .bages {padding-bottom: 7px;}
+.navbar{ backdrop-filter: blur(2px); background-color: #00000033;}
+.main-content {padding-top:15px;}
+.row>* {padding-right: calc(var(--bs-gutter-x)/ 4);padding-left: calc(var(--bs-gutter-x)/ 4);}
 </style>
 
 <main role="main">
-<div class="container-fluid flex-column">
-<div class="row" id="rooms_cont">
-
+<nav class="navbar site-header sticky-top py-1">
+  <div class="container-fluid flex-md-row justify-content-between">
+   <span class="navbar-brand text-white">SLSDesign</span>
+   <div class="dropdown">
+      <div class="btn btn-outline-secondary"  data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="collapse" style="padding-right:28px">
+        <i class="fa fa-bell-o" aria-hidden="true" style="font-size:23px;color: #ffffff87;"></i>
+        <span class="badge position-absolute" id="panel_alerts_count" style="top: 8px;margin-left: 3px;">0</span>
+      </div>	
  
+      <ul class="dropdown-menu dropdown-menu-end" id="panel_alerts" aria-labelledby="alerts-dd">
+	  </ul>
+
+      <div class="btn btn-outline-secondary" id="settings-dd"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      	<i class="fa fa-cog" aria-hidden="true" style="font-size:23px;color: #ffffff87;"></i>
+      </div>
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container-fluid flex-column main-content">
+<div class="row" id="rooms_cont">
+        <!--div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 card-cont">
+          <div class="card">
+            <div class="card-header">
+            test card
+            </div>
+ 		  </div>
+        </div-->
 </div>  
 </div>
+
+<!--Modal-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Настройки внешнего вида</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+ 
+        <div class="mb-3 row">
+        	<div class="col-md-4">
+       			<label class="form-label" for="settings-theme-val"><i class="fa fa-window-maximize" aria-hidden="true"></i> Цвет плиток</label>
+            </div>   
+			<div class="btn-group col-md-8" role="group" aria-label="Theme select" id="settings-theme-val">
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val0" value="bg-primary" autocomplete="off">
+              <label class="btn btn-primary" for="settings-theme-val0">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val1" value="bg-secondary" autocomplete="off">
+              <label class="btn btn-secondary" for="settings-theme-val1">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val2" value="bg-success" autocomplete="off">
+              <label class="btn btn-success" for="settings-theme-val2">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val3" value="bg-danger" autocomplete="off"> 
+              <label class="btn btn-danger" for="settings-theme-val3">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val4" value="bg-warning" autocomplete="off">
+              <label class="btn btn-warning" for="settings-theme-val4">&nbsp;</label> 
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val5" value="bg-info" autocomplete="off">
+              <label class="btn btn-info" for="settings-theme-val5">&nbsp;</label>          
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val6" value="bg-light" autocomplete="off">
+              <label class="btn btn-light" for="settings-theme-val6">&nbsp;</label>  
+              <input type="radio" class="btn-check" name="settings-theme-val-radio" id="settings-theme-val7" value="bg-dark" autocomplete="off">
+              <label class="btn btn-dark" for="settings-theme-val7">&nbsp;</label>     
+          </div>
+        </div>
+        <div class="mb-3 row">
+        	<div class="col-md-4">
+            	<label class="form-label" for="settings-font-val"><i class="fa fa-font" aria-hidden="true"></i> Цвет шрифта</label>
+            </div>
+			<div class="btn-group col-md-8" role="group" aria-label="Theme select" id="settings-font-val">
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val0" value="text-primary" autocomplete="off">
+              <label class="btn btn-primary" for="settings-font-val0">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val1" value="text-secondary" autocomplete="off">
+              <label class="btn btn-secondary" for="settings-font-val1">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val2" value="text-success" autocomplete="off">
+              <label class="btn btn-success" for="settings-font-val2">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val3" value="text-danger" autocomplete="off"> 
+              <label class="btn btn-danger" for="settings-font-val3">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val4" value="text-warning" autocomplete="off">
+              <label class="btn btn-warning" for="settings-font-val4">&nbsp;</label> 
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val5" value="text-info" autocomplete="off">
+              <label class="btn btn-info" for="settings-font-val5">&nbsp;</label>          
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val6" value="text-light" autocomplete="off">
+              <label class="btn btn-light" for="settings-font-val6">&nbsp;</label>  
+              <input type="radio" class="btn-check" name="settings-font-val-radio" id="settings-font-val7" value="text-dark" autocomplete="off">
+              <label class="btn btn-dark" for="settings-font-val7">&nbsp;</label>     
+          </div>
+        </div> 
+        
+        <div class="mb-3 row">
+            <div class="col-md-4">
+                <label class="form-label" for="settings-bg-val"><i class="fa fa-picture-o" aria-hidden="true"></i> Цвет фона</label>
+            </div>   
+			<div class="btn-group col-md-8" role="group" aria-label="Theme select" id="settings-bg-val">
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val0" value="bg-primary" autocomplete="off">
+              <label class="btn btn-primary" for="settings-bg-val0">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val1" value="bg-secondary" autocomplete="off">
+              <label class="btn btn-secondary" for="settings-bg-val1">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val2" value="bg-success" autocomplete="off">
+              <label class="btn btn-success" for="settings-bg-val2">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val3" value="bg-danger" autocomplete="off"> 
+              <label class="btn btn-danger" for="settings-bg-val3">&nbsp;</label>
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val4" value="bg-warning" autocomplete="off">
+              <label class="btn btn-warning" for="settings-bg-val4">&nbsp;</label> 
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val5" value="bg-info" autocomplete="off">
+              <label class="btn btn-info" for="settings-bg-val5">&nbsp;</label>          
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val6" value="bg-light" autocomplete="off">
+              <label class="btn btn-light" for="settings-bg-val6">&nbsp;</label>  
+              <input type="radio" class="btn-check" name="settings-bg-val-radio" id="settings-bg-val7" value="bg-dark" autocomplete="off">
+              <label class="btn btn-dark" for="settings-bg-val7">&nbsp;</label>     
+          </div>
+        </div>  
+        <div class="mb-3 row">
+        	<div class="col-md-4">
+            	<label class="form-label" for="settings-shadow-val"><i class="fa fa-star-half-o" aria-hidden="true"></i> Отображать тень</label>
+            </div>
+			<div class="btn-group col-md-4" role="group" aria-label="Theme select" id="settings-shadow-val">
+              <input type="radio" class="btn-check" name="settings-shadow-val-radio" id="settings-shadow-val0" value="true" autocomplete="off">
+              <label class="btn btn-primary" for="settings-shadow-val0">ON</label>
+              <input type="radio" class="btn-check" name="settings-shadow-val-radio" id="settings-shadow-val1" value="false" autocomplete="off">
+              <label class="btn btn-primary" for="settings-shadow-val1">OFF</label>
+            </div>
+         </div> 
+       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="changeSettings();">Сохранить</button>
+      </div>
+  </div>
+</div>
+
 </main>
 
 <script>
-
-//id комнат должны быть уникальны
-
-var rooms=`[
-{"id": 1, "title":"Гостевая"},
-{"id": 2, "title":"Кухня"},
-{"id": 4, "title":"Девчонки"},
-{"id": 5, "title":"Родители"},
-{"id": 6, "title":"Логово"},
-{"id": 8, "title":"2 этаж"},
-{"id": 10, "title":"Гараж"},
-{"id": 12, "title":"Дополнительно"},
-{"id": 11, "title":"Улица"}
-
-]`;
-
-//id - id девайса (уникальные)
-//room_id - id комнаты из списка выше
-//ieee - ieeeAddr со страницы девайсов
-//prop - свойство, которое будет выводиться/управляться данным элементом (switch поддерживают только ON/OFF)
-//title - заголовок девайса
-//type - тип устройства (пока в наличии 4 типа:
-//-- sensor - обыкновенный цифровой сенсор
-//-- bin-sensor - двоичный сенсор (true/false дд, датчик положения, дачик открытия)
-//-- switch - тумблер (ON/OFF)
-//-- dimmer - слайдер
-//icon - иконка девайса (пока поддерживается для sensor, bin-sendor, иконки брать тут https://fontawesome.com/v4.7.0/icons/)
-//unit - единица измерения (для типа sensor)
-//min - минимальное значение (для типа dimmer)
-//max - максимальное значение (для типа dimmer)
-
-var devices=`[
-
-{"id": 11, "room_id":1, "ieee":"0x00124B001EC83D62", "prop":"state_l6", "title":"Прихожая", "type":"switch"},
-{"id": 12, "room_id":1, "ieee":"0x00124B001EC83D62", "prop":"state_l7", "title":"Гардероб", "type":"switch"},
-{"id": 13, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l4", "title":"Коридор", "type":"switch"},
-{"id": 14, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l3", "title":"Зона для чтения ;-)", "type":"switch"},
-{"id": 15, "room_id":1, "ieee":"0x00124B001EC80F20", "prop":"state_l1", "title":"Душевая", "type":"switch"},
-{"id": 16, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l6", "title":"Лестница 1-2", "type":"switch"},
-{"id": 17, "room_id":1, "ieee":"0x00124B001EC84F3C", "prop":"state_l5", "title":"Лестница 2-3", "type":"switch"},
-
-
-
-{"id": 21, "room_id":2, "ieee":"0x00158D00036C1508", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
-{"id": 22, "room_id":2, "ieee":"0x00158D00036C1508", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
-{"id": 23, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l4", "title":"Обеденная зона", "type":"switch"},
-{"id": 24, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l5", "title":"Подсветка зоны готовки", "type":"switch"},
-{"id": 26, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l3", "title":"Подсветка фартука", "type":"switch"},
-{"id": 29, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l7", "title":"Гостевая зона", "type":"switch"},
-{"id": 210, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l8", "title":"Телевизор","type":"switch"},
-
-{"id": 27, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l6", "title":"Остров", "type":"switch"},
-{"id": 25, "room_id":2, "ieee":"0x00124B001EC80F20", "prop":"state_l2", "title":"Терасса", "type":"switch"},
-
-
-
-
-{"id": 27, "room_id":3, "ieee":"0xEC1BBDFFFE90EAA9", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
-
-
-
-{"id": 41, "room_id":4, "ieee":"0x00158D000346B825", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
-{"id": 42, "room_id":4, "ieee":"0x00158D000346B825", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
-{"id": 43, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l2", "title":"Свет Анюта", "type":"switch"},
-{"id": 44, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l1", "title":"Свет Софа", "type":"switch"},
-{"id": 45, "room_id":4, "ieee":"0x00124B001F7CA144", "prop":"state_l1", "title":"Свет Общий", "type":"switch"},
-{"id": 46, "room_id":4, "ieee":"0x00158D0003E7BC74", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
-{"id": 47, "room_id":4, "ieee":"0x00158D0003E7BC69", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
-{"id": 48, "room_id":4, "ieee":"0x00158D000346B825", "prop":"pressure", "title":"Давление", "type":"sensor", "icon":"fa-tachometer", "unit":"kPa"},
-
-
-{"id": 51, "room_id":5, "ieee":"0x00158D0001A2E891", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
-{"id": 52, "room_id":5, "ieee":"0x00158D0001A2E891", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
-{"id": 53, "room_id":5, "ieee":"0x00124B001EC84F3C", "prop":"state_l7", "title":"Свет 1", "type":"switch"},
-{"id": 54, "room_id":5, "ieee":"0x00124B001EC84F3C", "prop":"state_l8", "title":"Свет 2", "type":"switch"},
-{"id": 55, "room_id":5, "ieee":"0x00124B001F7CA144", "prop":"state_l7", "title":"Шкаф", "type":"switch"},
-{"id": 56, "room_id":5, "ieee":"0x00124B001F7CA144", "prop":"state_l6", "title":"Сан.узел", "type":"switch"},
-{"id": 57, "room_id":5, "ieee":"0x00158D0002EE1285", "prop":"position", "title":"Шторы 1", "type":"dimmer", "min":0, "max":100},
-{"id": 58, "room_id":5, "ieee":"0x5C0272FFFECAAC69", "prop":"position", "title":"Шторы 2", "type":"dimmer", "min":0, "max":100},
-
-
-
-
-{"id": 61,  "room_id":6, "ieee":"0x00158D0001A2D2FE", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
-{"id": 62,  "room_id":6, "ieee":"0x00158D0001A2D2FE", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
-{"id": 63,  "room_id":6, "ieee":"0x00158D00039773C8", "prop":"occupancy", "title":"Движение", "type":"bin-sensor", "icon":"fa-male", "unit":"%"},
-{"id": 64,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l1", "title":"Чил-аут", "type":"switch"},
-{"id": 65,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l2", "title":"Леха 2", "type":"switch"},
-{"id": 66,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l3", "title":"Сауна", "type":"switch"},
-{"id": 67,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l4", "title":"Леха 1", "type":"switch"},
-{"id": 68,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l5", "title":"Вентиляция", "type":"switch"},
-{"id": 69,  "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l6", "title":"1", "type":"switch"},
-{"id": 610, "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l7", "title":"2", "type":"switch"},
-{"id": 611, "room_id":6, "ieee":"0x00124B001EC82D84", "prop":"state_l8", "title":"3", "type":"switch"},
-
-
-
-
-{"id": 81, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l3", "title":"Ванная комната", "type":"switch"},
-{"id": 82, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l5", "title":"Коридор", "type":"switch"},
-{"id": 83, "room_id":8, "ieee":"0x00124B001F7CA144", "prop":"state_l4", "title":"Кабинет", "type":"switch"},
-
-
-{"id": 101, "room_id":10, "ieee":"0xBC33ACFFFE501BAE", "prop":"temperature", "title":"Температура", "type":"sensor", "icon":"fa-thermometer-full", "unit":"°C"},
-{"id": 102, "room_id":10, "ieee":"0xBC33ACFFFE501BAE", "prop":"humidity", "title":"Влажность", "type":"sensor", "icon":"fa-tint", "unit":"%"},
-{"id": 103, "room_id":10, "ieee":"0x00124B001EC83D62", "prop":"state_l4", "title":"Гараж", "type":"switch"},
-{"id": 104, "room_id":10, "ieee":"0x00124B001EC83D62", "prop":"state_l2", "title":"Котельная", "type":"switch"},
-
-
-{"id": 111, "room_id":11, "ieee":"0x00124B001EC80F20", "prop":"state_l2", "title":"Терасса", "type":"switch"},
-{"id": 112, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l5", "title":"Вход", "type":"switch"},
-{"id": 113, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l3", "title":"Вьезд", "type":"switch"},
-{"id": 114, "room_id":11, "ieee":"0x00124B001EC83D62", "prop":"state_l1", "title":"Улица со стороны котельной", "type":"switch"},
-
-
-{"id": 120, "room_id":12, "ieee":"0x00124B001F7CA144", "prop":"alarm", "title":"Сигнализация", "type":"switch"}
-
-]`;
-
-
-
-
-var a=['startWebSo','=\x22badge\x20bg','info','s=\x22form-ch','brMGV','=\x22form-che','</label>\x0a\x20','classList','\x20\x20\x20\x20\x20\x20\x20\x20<l','e=\x22display','ws:','bg-warning','add','e?dev=','beforeend','WebSocket','Failed\x20con','warning','stringify','name','value','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','OFF','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','error','dev_','WS\x20connect','forEach','bg-seconda','\x20\x20\x20\x20\x20</div','</div>\x20','sensor','switch','\x20\x20</div>\x0a\x20','ieee','onopen','\x20\x20\x20<input\x20','type=\x22chec','stener','WS\x20data\x20(/','rd-cont\x22>\x0a','Action:\x20','GET','console','blob','to\x20',':inline\x22\x20i','v>\x0a\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20</div>','\x20\x20\x20\x20','icon','ected\x20(/)','iv>\x0a\x20\x20\x20\x20\x20\x20','ById','d=\x22room_','return\x20(fu','exception','\x20Data:\x20',':81/log','e=\x22range\x22\x20','log','remove','<div\x20class','\x20checked','for=\x22dev_','abel\x20class','\x20<div\x20clas','&action=se','\x20\x20\x20\x20\x20\x20</di','addEventLi','\x22\x20value=\x22','ck\x20form-sw','=\x22card\x22>\x0a\x20','toString','\x22\x20id=\x22dev_','onmessage','-secondary','l-sm-12\x20ca','onclose','bin-sensor','\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20','prototype','m-range\x22\x20i','starting\x20h','insertAdja','action','hostname','ctor(\x22retu','\x22\x20min=\x22','ieeeAddr','constructo','\x20class=\x22ca','payload','kbox\x22\x20clas','parse','category','WS\x20disconn','\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20','change','ttp\x20get','tState&nam','KAHAs','\x20id=\x22dev_','getElement','room_id','\x20\x20\x20\x20\x20\x20\x20<i\x20','ckets();','\x20\x20\x20</div>\x0a','trace','ed\x20(/)','status','warn','class=\x22fa\x20','prop','eck-input\x22','zNjab','rd-body\x22\x20i','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','binaryType','DOMContent','/api/zigbe','title','\x20\x20\x20\x20\x20\x20\x20</d','\x22col-xl-3\x20','div\x20class=','Loaded','centHTML','length','ck-label\x22\x20','\x22\x20class=\x22b','MozWebSock','__proto__','checked','subscribe','send','col-lg-4\x20c','open','></i>\x0a\x20\x20\x20\x20','data','secondary','den=\x22true\x22','\x22\x20aria-hid','contains','Sending\x20me','itch\x22>\x0a\x20\x20\x20','bind','Conneting\x20','type','\x22\x20title=\x22'];(function(b,c){var d=function(e){while(--e){b['push'](b['shift']());}};d(++c);}(a,0x182));var b=function(c,d){c=c-0x0;var e=a[c];return e;};var a4=function(e,f){return b(e- -'0x3e7',f);},d=function(){var e=!![];return function(f,g){var h=e?function(){if(g){var i=g['apply'](f,arguments);return g=null,i;}}:function(){};return e=![],h;};}(),c=d(this,function(){var a3=function(e,f){return b(e-'0xa0',f);},f;try{var g=Function(a3('0x114')+'nction()\x20'+('{}.constru'+a3('0x134')+'rn\x20this\x22)('+'\x20)')+');');f=g();}catch(n){f=window;}var h=f['console']=f[a3('0x108')]||{},i=[a3('0x119'),a3('0xb7'),a3('0xdf'),a3('0xf5'),a3('0x115'),'table',a3('0xb4')];for(var j=0x0;j<i[a3('0xc7')];j++){var k=d[a3('0xa2')+'r'][a3('0x12e')][a3('0xd9')](d),l=i[j],m=h[l]||k;k[a3('0xcb')]=d[a3('0xd9')](d),k[a3('0x126')]=m[a3('0x126')][a3('0xd9')](m),h[l]=k;}});c();var dev_arr=JSON[a4(-'0x3e1')](devices);document[a4(-'0x365')+'stener'](a4(-'0x3c8')+a4(-'0x3c2'),function(e){var a5=function(e,f){return a4(e-'0x9b',f);},f=httpGet(a5(-'0x32c')+'e/devices'),g=JSON[a5(-'0x346')](f),h=JSON[a5(-'0x346')](rooms);h[a5(-'0x2f4')](function(k){var a6=function(e,f){return a5(e- -'0x215',f);};rooms_cont[a6(-'0x4d0')+'centHTML'](a6(-'0x516'),i(k)),j(k['id']);});function i(k){var a7=function(e,f){return a5(e- -'0x1',f);},l='\x0a\x20\x20\x20\x20\x20\x20\x20\x20<'+a7(-'0x329')+a7(-'0x32a')+a7(-'0x31e')+'ol-md-6\x20co'+a7(-'0x2c3')+a7(-'0x2e8')+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'<div\x20class'+a7(-'0x2c8')+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+a7(-'0x2ce')+'s=\x22card-he'+'ader\x22>'+k[a7(-'0x32c')]+(a7(-'0x2fb')+a7(-'0x33a')+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+a7(-'0x2c0')+'\x20\x20\x20\x20\x20\x20<div'+a7(-'0x34a')+a7(-'0x331')+a7(-'0x2da'))+k['id']+('\x22>\x0a\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20<di'+'v\x20id=\x22bage'+'s_')+k['id']+(a7(-'0x324')+'ages\x22>\x0a\x20\x20\x20'+a7(-'0x330')+a7(-'0x344')+a7(-'0x2cc')+a7(-'0x2e1')+a7(-'0x2f3')+a7(-'0x2f9')+a7(-'0x2ef')+a7(-'0x32b')+a7(-'0x2dc')+'\x20\x20');return l;}function j(k){var a8=function(e,f){return a5(e-'0x279',f);};let l=document[a8(-'0xc4')+'ById']('bages_'+k),m=document['getElement'+a8(-'0x61')]('room_'+k);dev_arr[a8(-'0x7b')](function(n){var a9=function(e,f){return a8(e-'0x12',f);};if(n[a9(-'0xb1')]==k){g[a9(-'0x69')](function(p){var aa=function(e,f){return a9(e-'0x20',f);};if(n[aa(-'0x42')]==p[aa(-'0xa0')]){n[aa(-'0x50')]=p['st'][n[aa(-'0x88')]];if(n[aa(-'0x66')]==aa(-'0x44')){if(n[aa(-'0x50')]=='ON')n[aa(-'0x50')]=aa(-'0x25');if(n['value']==aa(-'0x4e'))n[aa(-'0x50')]='';}if(n[aa(-'0x66')]==aa(-'0x15')){if(n[aa(-'0x50')]==!![])n[aa(-'0x50')]=aa(-'0x53');if(n[aa(-'0x50')]==![])n[aa(-'0x50')]=aa(-'0x6e');}}});var o;if(n['type']==a9(-'0x65')){let p;n[a9(-'0x52')]?p=a9(-'0x6f')+a9(-'0xb0')+a9(-'0xa9')+n[a9(-'0x52')]+('\x22\x20aria-hid'+a9(-'0x8d')+a9(-'0x90')+a9(-'0xa4')+'\x20\x20'):p='',o=a9(-'0x46')+a9(-'0x83')+a9(-'0x38')+a9(-'0x85')+n['title']+'\x22>\x20'+p+('\x20<div\x20styl'+a9(-'0x7b')+a9(-'0x56')+'d=\x22dev_')+n['id']+'\x22>'+n[a9(-'0x70')]+a9(-'0x66')+n['unit']+('</div>\x0a\x20\x20\x20'+a9(-'0xa4')+'\x20\x20\x20'),l[a9(-'0x30')+a9(-'0x9b')](a9(-'0x76'),o);}if(n['type']==a9(-'0x35')){let q;n['icon']?q=a9(-'0x6f')+'\x20\x20\x20\x20\x20\x20\x20<i\x20'+a9(-'0xa9')+n[a9(-'0x52')]+(a9(-'0x8c')+'den=\x22true\x22'+'></i>\x0a\x20\x20\x20\x20'+a9(-'0xa4')+'\x20\x20'):q='',o=a9(-'0x46')+a9(-'0x83')+'-'+n[a9(-'0x70')]+a9(-'0x3a')+n['id']+a9(-'0x85')+n[a9(-'0xa0')]+'\x22>'+q+('</div>\x0a\x20\x20\x20'+a9(-'0xa4')+a9(-'0x53')),l[a9(-'0x30')+a9(-'0x9b')](a9(-'0x76'),o);}n[a9(-'0x86')]==a9(-'0x64')&&(o=a9(-'0x46')+'=\x22form-che'+a9(-'0x3d')+a9(-'0x89')+a9(-'0xa4')+'\x20\x20\x20<input\x20'+a9(-'0x5f')+a9(-'0xbc')+'s=\x22form-ch'+'eck-input\x22'+'\x20id=\x22dev_'+n['id']+'\x22\x20'+n[a9(-'0x70')]+('>\x0a\x20\x20\x20\x20\x20\x20\x20\x20'+a9(-'0x7c')+'abel\x20class'+a9(-'0x7f')+a9(-'0x99')+a9(-'0x44'))+n['id']+'\x22>'+n['title']+(a9(-'0x7e')+a9(-'0xa4')+a9(-'0x54')),m[a9(-'0x30')+a9(-'0x9b')](a9(-'0x76'),o),document[a9(-'0xb2')+a9(-'0x4f')]('dev_'+n['id'])[a9(-'0x3f')+'stener'](a9(-'0xb7'),function(){var ab=function(e,f){return a9(e-'0xdc',f);};this['checked']?httpReq(n[ab('0x7a')],n[ab('0x34')],'ON'):httpReq(n[ab('0x7a')],n[ab('0x34')],ab('0x6e'));})),n[a9(-'0x86')]=='dimmer'&&(o='<input\x20typ'+a9(-'0x49')+'class=\x22for'+a9(-'0x32')+'d=\x22dev_'+n['id']+a9(-'0x3e')+n[a9(-'0x70')]+a9(-'0xc1')+n['min']+'\x22\x20max=\x22'+n['max']+'\x22>',m['insertAdja'+a9(-'0x9b')](a9(-'0x76'),o),document[a9(-'0xb2')+a9(-'0x4f')](a9(-'0x6b')+n['id'])[a9(-'0x3f')+a9(-'0x5e')]('change',function(){var ac=function(e,f){return a9(e-'0x3cd',f);};httpReq(n['ieee'],n['prop'],this[ac('0x35d')]);}));}});}startWebSockets();});function devUpdate(e){dev_arr['forEach'](function(f){var ad=function(e,f){return b(e-'0x378',f);};e[ad('0x37c')][ad('0x379')]==f[ad('0x3d7')]&&e[ad('0x37c')][ad('0x3c8')]==f[ad('0x391')]&&f['type']==ad('0x3d4')&&(document[ad('0x387')+ad('0x3ea')](ad('0x3ce')+f['id'])['innerHTML']=e['payload'][ad('0x3c9')]);if(e[ad('0x37c')]['ieeeAddr']==f[ad('0x3d7')]&&e[ad('0x37c')][ad('0x3c8')]==f['prop']&&f[ad('0x3b3')]=='bin-sensor'){if(e[ad('0x37c')][ad('0x3c9')]==!![]){if(ad('0x393')===ad('0x393'))document[ad('0x387')+ad('0x3ea')](ad('0x3ce')+f['id'])[ad('0x3bc')][ad('0x3c1')](ad('0x3c0'));else{function g(){f='';}}}else document[ad('0x387')+ad('0x3ea')]('dev_'+f['id'])[ad('0x3bc')][ad('0x3ae')]('bg-warning')==!![]&&document[ad('0x387')+ad('0x3ea')]('dev_'+f['id'])['classList'][ad('0x3f2')](ad('0x3c0')),document['getElement'+ad('0x3ea')](ad('0x3ce')+f['id'])[ad('0x3bc')][ad('0x3c1')](ad('0x3d1')+'ry');}e[ad('0x37c')][ad('0x379')]==f['ieee']&&e[ad('0x37c')][ad('0x3c8')]==f[ad('0x391')]&&f['type']==ad('0x3d5')&&(e[ad('0x37c')][ad('0x3c9')]=='ON'?document[ad('0x387')+ad('0x3ea')](ad('0x3ce')+f['id'])[ad('0x3a4')]=!![]:document[ad('0x387')+'ById']('dev_'+f['id'])['checked']=![]);if(e[ad('0x37c')][ad('0x379')]==f[ad('0x3d7')]&&e[ad('0x37c')][ad('0x3c8')]==f[ad('0x391')]&&f[ad('0x3b3')]=='dimmer'){if(ad('0x3b9')===ad('0x3b9'))document[ad('0x387')+'ById'](ad('0x3ce')+f['id'])[ad('0x3c9')]=e[ad('0x37c')][ad('0x3c9')];else{function h(){var ae=function(e,f){return ad(e- -'0x3aa',f);};if(i[ae('0x1f')]==!![])j[ae('0x1f')]=ae('0x1c');if(k['value']==![])l[ae('0x1f')]=ae('0x1');}}}});}var wsTimer=0x0,startedWebSockets=0x0;function startWebSockets(){var af=function(e,f){return a4(e-'0x32f',f);},f=window['location'],g;serverUrl=af(-'0x71'),serverUrl+='//'+f[af(-'0x25')]+af(-'0x41');try{if('KAHAs'!==af(-'0xab')){function h(){var ag=function(e,f){return af(e-'0x1c2',f);};t=ag('0x185')+ag('0x14c')+ag('0x18e')+ag('0x142')+ag('0x127')+ag('0x16b')+ag('0x16c')+ag('0x10f')+ag('0x14a')+ag('0x124')+ag('0x118')+u['id']+'\x22\x20'+v[ag('0x15b')]+(ag('0x15e')+ag('0x14f')+ag('0x188')+'=\x22form-che'+ag('0x132')+ag('0x187'))+w['id']+'\x22>'+x[ag('0x12b')]+(ag('0x14d')+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+ag('0x177')),y[ag('0x19b')+'centHTML'](ag('0x155'),z),A[ag('0x119')+ag('0x17c')](ag('0x160')+B['id'])[ag('0x18c')+ag('0x16d')](ag('0x114'),function(){var ah=function(e,f){return ag(e-'0x356',f);};this[ah('0x48c')]?O(P[ah('0x4bf')],Q[ah('0x479')],'ON'):R(S[ah('0x4bf')],T[ah('0x479')],ah('0x4b3'));});}}else{console[af(-'0x3f')](af(-'0x7e')+af(-'0x4e')+serverUrl);if(window[af(-'0x8e')+'et'])wsSocket=new MozWebSocket(serverUrl);else window[af(-'0x6c')]&&(wsSocket=new WebSocket(serverUrl));}}catch(i){return console[af(-'0x3f')](af(-'0x6b')+'necting\x20to'+'\x20'+serverUrl),![];}wsSocket[af(-'0x9a')]=af(-'0x4f'),wsSocket[af(-'0x58')]=function(j){var ai=function(e,f){return af(e-'0x1da',f);};console[ai('0x19b')](ai('0x179')+ai('0x137')),startedWebSockets=0x1,clearTimeout(wsTimer),subscribeToDevices();},wsSocket[af(-'0x30')]=function(j){var aj=function(e,f){return af(e-'0x3c5',f);};console['log'](aj('0x371')+')');var k;k=JSON[aj('0x313')](j[aj('0x33f')]),console[aj('0x386')](aj('0x373')+k[aj('0x314')]+aj('0x383')+JSON[aj('0x35c')](k)),devUpdate(k);return;},wsSocket[af(-'0x2d')]=function(j){var ak=function(e,f){return af(e-'0x14e',f);};startedWebSockets=0x0,wsTimer=setTimeout(ak('0xd3')+ak('0xa8'),0x5*0x3e8),console[ak('0x10f')](ak('0x9e')+ak('0x106'));return;};}function subscribeToDevices(){var al=function(e,f){return a4(e- -'0x1f',f);};console['log'](al(-'0x3cf')+'nu\x20subscri'+'ption\x20requ'+'est...');var e;return e=new Object(),e[al(-'0x374')]=al(-'0x3d9'),e[al(-'0x3ff')]='zigbee',wsSocket[al(-'0x3d8')](JSON['stringify'](e)),![];}function httpGet(e){var am=function(e,f){return a4(e-'0x2cf',f);};console['log'](am(-'0x88')+am(-'0x10d'));var f=new XMLHttpRequest();return f[am(-'0xe8')](am(-'0xb1'),e,![]),f[am(-'0xea')](),f[am(-'0x102')]!=0xc8?![]:f['responseTe'+'xt'];}function httpReq(e,f,g){var an=function(e,f){return a4(e-'0x38b',f);},h=new XMLHttpRequest();return h[an(-'0x2c')](an('0xb'),an(-'0x3c')+an(-'0x12')+e+(an('0x24')+an(-'0x50')+'e=')+f+'&value='+g,![]),h[an(-'0x2e')](null),h['responseTe'+'xt'];}
+var c=['2DuEGIk','\x20\x20\x20</div>','gRryC','e/devices','1WZflfl','beforeend','est...','rn\x20this\x22)(','{\x22card_the','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20','stener','fXWXW','min','location','insertAdja','payload','icon','classList','send','toString','switch','449QLLLBr','action','\x20checked','addEventLi','594750pDqhlN','onmessage','warn','159244CclOPi','dev_','318093zyNOJW','Loaded','clamation-','console','apply','ont-val','add','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','card_text','settings-t','settings-b','dimmer','WebSocket','body_shado','\x22fa\x20','</div>\x0a\x20\x20\x20','WS\x20disconn','table','blob','bool','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20\x20</div','=\x22fa\x20fa-ex','-empty','prototype','ieee','name','OFF','itch\x22>\x0a\x20\x20\x20','status','info','ck-label\x22\x20','den=\x22true\x22','remove','constructo','heme-val','DOMContent','settings-s','checked','\x20\x20\x20','parse','\x22,\x20\x22card_t','forEach','637373EOxdAF','ById','value','hadow-val','ext\x22:\x22','panel_aler','bind','/api/obj','secondary','type','jiZEU','bin','aria-hidde','class=\x22fa\x20','{}.constru','friendly_n','196331NFoRcN','74Zjmwbi','log','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','<div\x20class','&value=','\x20Data:\x20','settings-f','main_bg','objects','ieeeAddr','battery\x20lo','true','735740NzMCgM','\x20\x20\x20\x20\x20\x20</di','\x20\x20\x20</div>\x0a','sw_type','\x20\x20\x20\x20\x20\x20\x20<i\x20','d=\x22dev_','stringify','ckets();','unit','open','eck-input\x22','getElement','g-val','prop','title','\x22\x20title=\x22','<a\x20class=\x22',':81/log','\x20</a></li>','UOBGu','\x22\x20aria-hid','\x22\x20type=\x22bu','rooms.json'];var d=function(a,b){a=a-0x1b0;var e=c[a];return e;};var a2=function(a,b){return d(a-0x202,b);};(function(a,b){var a1=function(a,b){return d(b- -0x8e,a);};while(!![]){try{var e=-parseInt(a1(0x103,0x133))*-parseInt(a1(0x131,0x14d))+parseInt(a1(0x180,0x195))+parseInt(a1(0x16e,0x189))*-parseInt(a1(0x135,0x144))+parseInt(a1(0x17e,0x148))+-parseInt(a1(0x141,0x178))+parseInt(a1(0x197,0x188))*-parseInt(a1(0x117,0x12f))+-parseInt(a1(0x147,0x14b));if(e===b)break;else a['push'](a['shift']());}catch(f){a['push'](a['shift']());}}}(c,0x6805e));var devices=httpGet('/api/files'+'?path=/ui.'+'devices.js'+'on'),dev_arr=JSON['parse'](devices);document['addEventLi'+'stener'](a2(0x401,0x407)+a2(0x3de,0x3e6),function(a){var a3=function(a,b){return a2(b- -0x3c6,a);},b=httpGet('/api/files'+'?path=/ui.'+a3(-0x6,-0x8)),e=httpGet('/api/files'+'?path=/ui.'+'settings.j'+'son'),f=JSON['parse'](e);for(let q=0x0;q<0x8;q++){document['getElement'+'ById']('settings-t'+'heme-val'+q)[a3(0x15,0x44)]==f['card_theme']&&(document['getElement'+a3(0x52,0x43)](a3(0x2f,0x20)+'heme-val'+q)[a3(0x33,0x3d)]=!![]),document['getElement'+'ById']('settings-f'+'ont-val'+q)['value']==f[a3(0x52,0x1f)]&&(document[a3(0x25,-0x13)+'ById']('settings-f'+'ont-val'+q)[a3(0x18,0x3d)]=!![]),document['getElement'+'ById']('settings-b'+'g-val'+q)[a3(0x4b,0x44)]==f['main_bg']&&(document['getElement'+'ById']('settings-b'+'g-val'+q)[a3(0x1a,0x3d)]=!![]);}for(let r=0x0;r<0x2;r++){if('UOBGu'!==a3(0x2e,-0xb)){function s(){var a4=function(a,b){return a3(a,b- -0x167);};if(g['value']=='ON')h['value']='\x20checked';if(r['value']=='OFF')j[a4(-0x108,-0x123)]='';}}else document['getElement'+a3(0x66,0x43)](a3(0x3d,0x3c)+'hadow-val'+r)['value']==f['body_shado'+'w']&&(document['getElement'+'ById']('settings-s'+a3(0x1f,0x45)+r)[a3(0x32,0x3d)]=!![]);}var g=httpGet('/api/zigbe'+a3(-0x3,-0x4)),h=JSON['parse'](g),j=httpGet(a3(0x35,0x49)),k=JSON['parse'](j);let l=document[a3(0x12,-0x13)+'ById']('page-top');f[a3(0x98,0x5a)]&&(l['classList']['remove']('bg-dark'),l['classList']['add'](f['main_bg']));f['body_shado'+'w']=='false'&&l['classList'][a3(0x67,0x38)](a3(-0x3,0x24)+'w');var m=0x0;h['forEach'](function(t){var a5=function(a,b){return a3(a,b-0x20b);};if(t['st']['battery']){if(t['st']['battery']<0x28){let w='fa-battery'+'-quarter',x='bg-warning';text='battery\x20'+t['st']['battery']+'\x20%';if(t['st']['battery']<0xf){w='fa-battery'+a5(0x235,0x239),x='bg-danger',text='battery\x20lo'+'w';var u=0x1;}content='<li>\x0a\x20\x20\x20\x20\x09'+'<a\x20class=\x22'+'dropdown-i'+'tem\x20'+x+(a5(0x1f2,0x202)+'tton\x22>\x0a\x20\x20\x20'+'\x20\x09<i\x20class'+a5(0x25b,0x238)+'clamation-'+'triangle\x22\x20'+'aria-hidde'+'n=\x22true\x22><'+'/i>\x20')+t[a5(0x240,0x25c)+'ame']+('\x20<i\x20class='+a5(0x213,0x230))+w+(a5(0x20d,0x201)+'den=\x22true\x22'+a5(0x1ef,0x229)+'</i>\x20')+text+a5(0x211,0x1ff),m++;let y=document['getElement'+a5(0x27e,0x24e)]('panel_aler'+'ts');y['insertAdja'+'centHTML']('beforeend',content);}}let v=document['getElement'+'ById']('panel_aler'+'ts_count');v['innerHTML']=m;if(m>0x0){if(u==0x1)v['classList'][a5(0x21f,0x228)]('bg-danger');else{if('tMmdX'==='AjdvU'){function z(){var a6=function(a,b){return a5(b,a-0x2f2);};f(g['ieee'],h[a6(0x4ec,0x4fb)],'1');}}else v[a5(0x1e9,0x215)]['add']('bg-warning');}}});var n=JSON['parse'](b);n[a3(0x65,0x41)](function(t){var a7=function(a,b){return a3(a,b-0x134);};rooms_cont[a7(0x14a,0x13b)+'centHTML'](a7(0x103,0x132),o(t)),p(t['id']);});function o(t){var a8=function(a,b){return a3(b,a- -0x11d);};if('iqoDm'===a8(-0xd1,-0xc9)){function w(){var a9=function(a,b){return a8(b-0x16c,a);};r[a9(0x4a,0x3c)+a9(0x65,0x92)]('settings-t'+'heme-val'+s)['value']==t['card_theme']&&(G[a9(0xa,0x3c)+'ById']('settings-t'+a9(0x8d,0x89)+H)['checked']=!![]),w['getElement'+'ById']('settings-f'+'ont-val'+x)['value']==y['card_text']&&(I[a9(0x3e,0x3c)+'ById'](a9(0xda,0xa8)+'ont-val'+J)[a9(0xa7,0x8c)]=!![]),B['getElement'+'ById']('settings-b'+'g-val'+C)['value']==D['main_bg']&&(K['getElement'+a9(0x60,0x92)]('settings-b'+'g-val'+L)['checked']=!![]);}}else{var u='\x0a\x20\x20\x20\x20\x20\x20\x20\x20<'+'div\x20class='+'\x22col-xl-3\x20'+'col-lg-4\x20c'+'ol-md-6\x20co'+'l-sm-12\x20ca'+'rd-cont\x22>\x0a'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'<div\x20class'+'=\x22card\x20h-1'+'00\x20'+f['card_theme']+'\x20'+f['card_text']+('\x22>\x0a\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20<div\x20'+'class=\x22car'+'d-header\x22>')+t['title']+('\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20'+a8(-0xbc,-0x8f)+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20<div'+'\x20class=\x22ca'+'rd-body\x22\x20i'+'d=\x22room_')+t['id']+(a8(-0x11b,-0xea)+'\x20\x20\x20\x20\x20\x20\x20<di'+'v\x20id=\x22bage'+'s_')+t['id']+('\x22\x20class=\x22b'+'ages\x22>\x0a\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20'+a8(-0xbd,-0xa3)+'v>\x0a\x20\x20\x20\x20\x20\x20\x20'+a8(-0xf1,-0x126)+a8(-0xff,-0xeb)+'\x20\x20</div>\x0a\x20'+'\x20\x20\x20\x20\x20\x20\x20</d'+'iv>\x0a\x20\x20\x20\x20\x20\x20'+'\x20\x20');return u;}}function p(t){var aa=function(a,b){return a3(a,b- -0x15d);};let u=document['getElement'+'ById']('bages_'+t),w=document['getElement'+aa(-0x12d,-0x11a)]('room_'+t);dev_arr['forEach'](function(x){var ah=function(a,b){return aa(b,a-0x26b);};if('myoWO'!=='myoWO'){function z(){var ab=function(a,b){return d(b-0x357,a);};e=ab(0x56b,0x546)+ab(0x55a,0x57e)+'class=\x22fa\x20'+f[ab(0x558,0x524)]+('\x22\x20aria-hid'+'den=\x22true\x22'+'></i>\x0a\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20');}}else{if(x['room_id']==t){h['forEach'](function(A){var ac=function(a,b){return d(a- -0x208,b);};if(x['ieee']==A['ieeeAddr']){if('veobY'!=='gFXvf'){x['value']=A['st'][x['prop']];if(x[ac(0x7,0x11)]=='switch'){if(x['value']=='ON')x['value']='\x20checked';if(x['value']=='OFF')x['value']='';}if(x['type']=='bin-sensor'){if(x['value']==!![])x['value']='warning';if(x[ac(0x0,-0x23)]==![])x[ac(0x0,-0xf)]=ac(0x6,0xd);}}else{function B(){var ad=function(a,b){return ac(a- -0x1fa,b);};e['getElement'+'ById'](ad(-0x21d,-0x1fe)+'g-val'+f)[ad(-0x201,-0x1e6)]=!![];}}}}),k['result']['forEach'](function(A){var ae=function(a,b){return d(a-0x1ab,b);};if(x['ieee']=='object'&&x['prop']==A['name']){if('vUBqd'!=='kGORO'){x['value']=A[ae(0x3b3,0x3de)];if(x['type']==ae(0x37c,0x38b)){if(ae(0x36a,0x34e)!=='MzkhK'){if(x['value']=='ON')x['value']='\x20checked';if(x['value']=='OFF')x['value']='';}else{function B(){var af=function(a,b){return ae(a- -0x37f,b);};let C='fa-battery'+'-quarter',D='bg-warning';m='battery\x20'+n['st']['battery']+'\x20%';if(o['st']['battery']<0xf){C='fa-battery'+'-empty',D='bg-danger',w=af(0x4d,0x20)+'w';var E=0x1;}q='<li>\x0a\x20\x20\x20\x20\x09'+af(-0x1e,-0x28)+'dropdown-i'+'tem\x20'+D+('\x22\x20type=\x22bu'+'tton\x22>\x0a\x20\x20\x20'+'\x20\x09<i\x20class'+'=\x22fa\x20fa-ex'+af(0x9,0x40)+'triangle\x22\x20'+af(0x3e,0x14)+'n=\x22true\x22><'+'/i>\x20')+r[af(0x41,0x22)+'ame']+('\x20<i\x20class='+'\x22fa\x20')+C+('\x22\x20aria-hid'+'den=\x22true\x22'+'>\x0a\x20\x20\x20\x20\x20\x20\x20\x20'+'</i>\x20')+s+'\x20</a></li>',t++;let F=u['getElement'+'ById'](af(0x37,0x0)+'ts');F[af(-0x9,-0x3a)+'centHTML'](af(-0x12,-0x12),t);}}}if(x['type']=='bin-sensor'){if(x['value']==!![])x['value']='warning';if(x[ae(0x3b3,0x38b)]==![])x['value']='secondary';}}else{function C(){var ag=function(a,b){return ae(b- -0xfd,a);};if(g['value']=='ON')h[ag(0x2db,0x2b6)]=ag(0x269,0x282);if(i['value']==ag(0x2d3,0x2a4))j['value']='';}}}});var y;if(x[ah(0x159,0x11e)]=='sensor'){let A;x[ah(0x117,0x140)]?A=ah(0x139,0x16d)+ah(0x171,0x14a)+'class=\x22fa\x20'+x[ah(0x117,0xfd)]+('\x22\x20aria-hid'+ah(0x145,0x120)+'></i>\x0a\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20'):A='',y='<div\x20class'+'=\x22badge\x20bg'+'-secondary'+'\x22\x20title=\x22'+x['title']+'\x22>\x20'+A+('\x20<div\x20styl'+'e=\x22display'+':inline\x22\x20i'+'d=\x22dev_')+x['id']+'\x22>'+x['value']+'</div>\x20'+x[ah(0x175,0x170)]+('</div>\x0a\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+ah(0x14c,0x174)),u['insertAdja'+'centHTML']('beforeend',y);}if(x[ah(0x159,0x145)]=='bin-sensor'){let B;x[ah(0x117,0xef)]?B='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20<i\x20'+ah(0x15d,0x130)+x['icon']+('\x22\x20aria-hid'+'den=\x22true\x22'+'></i>\x0a\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20'):B='',y='<div\x20class'+'=\x22badge\x20bg'+'-'+x['value']+'\x22\x20id=\x22dev_'+x['id']+ah(0xff,0x131)+x['title']+'\x22>'+B+(ah(0x134,0x140)+ah(0x163,0x12b)+'\x20\x20\x20\x20'),u[ah(0x115,0x102)+'centHTML']('beforeend',y);}if(x['type']=='switch'){y='<div\x20class'+'=\x22form-che'+'ck\x20form-sw'+ah(0x141,0x152)+ah(0x163,0x15c)+'\x20\x20\x20<input\x20'+'type=\x22chec'+'kbox\x22\x20clas'+'s=\x22form-ch'+ah(0xfa,0x135)+'\x20id=\x22dev_'+x['id']+'\x22\x20'+x['value']+(ah(0x12c,0x121)+'\x20\x20\x20\x20\x20\x20\x20\x20<l'+'abel\x20class'+'=\x22form-che'+ah(0x144,0x176)+'for=\x22dev_')+x['id']+'\x22>'+x['title']+('</label>\x0a\x20'+ah(0x163,0x13d)+ah(0x108,0x128)),w['insertAdja'+'centHTML']('beforeend',y);if(!x['sw_type'])x['sw_type']='normal';if(x['sw_type']=='normal')document['getElement'+'ById']('dev_'+x['id'])['addEventLi'+ah(0x111,0x124)]('change',function(){var ai=function(a,b){return ah(a-0x8e,b);};this['checked']?httpReq(x[ai(0x1cc,0x19c)],x['prop'],'ON'):httpReq(x['ieee'],x['prop'],'OFF');});else{if(x[ah(0x170,0x137)]=='bool')document['getElement'+'ById'](ah(0x124,0x107)+x['id'])[ah(0x11f,0xfe)+'stener']('change',function(){this['checked']?httpReq(x['ieee'],x['prop'],'true'):httpReq(x['ieee'],x['prop'],'false');});else x['sw_type']=='bin'&&document['getElement'+'ById']('dev_'+x['id'])[ah(0x11f,0x12c)+'stener']('change',function(){var aj=function(a,b){return ah(a-0x189,b);};this[aj(0x2d4,0x307)]?httpReq(x[aj(0x2c7,0x2d3)],x['prop'],'1'):httpReq(x[aj(0x2c7,0x2d5)],x['prop'],'0');});}}if(x[ah(0x159,0x129)]=='dimmer'){if('jUobZ'!=='jUobZ'){function C(){f(g['ieee'],h['prop'],'true');}}else y='<input\x20typ'+'e=\x22range\x22\x20'+'class=\x22for'+'m-range\x22\x20i'+ah(0x172,0x167)+x['id']+'\x22\x20value=\x22'+x['value']+'\x22\x20min=\x22'+x[ah(0x113,0xf4)]+'\x22\x20max=\x22'+x['max']+'\x22>',w['insertAdja'+'centHTML']('beforeend',y),document[ah(0xfb,0x10f)+ah(0x151,0x17d)](ah(0x124,0x112)+x['id'])['addEventLi'+'stener']('change',function(){httpReq(x['ieee'],x['prop'],this['value']);});}if(x['type']=='value'){let D;if(x['icon']){if('tEXpQ'==='tEXpQ')D='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20<i\x20'+ah(0x15d,0x199)+x['icon']+('\x22\x20aria-hid'+'den=\x22true\x22'+'></i>\x0a\x20\x20\x20\x20'+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20');else{function E(){k['getElement'+'ById']('dev_'+l['id'])['addEventLi'+'stener']('change',function(){var ak=function(a,b){return d(b-0x109,a);};this['checked']?y(z['ieee'],A['prop'],ak(0x2f0,0x32b)):B(C['ieee'],D['prop'],'false');});}}}else D='';y=ah(0x164,0x179)+'=\x22\x22\x20title='+'\x22'+x['title']+'\x22>\x20'+D+x[ah(0xfe,0x122)]+('\x20<div\x20styl'+'e=\x22display'+':inline\x22\x20i'+'d=\x22dev_')+x['id']+'\x22>'+x['value']+'</div>\x20'+x[ah(0x175,0x17d)]+(ah(0x134,0x166)+'\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+'\x20\x20\x20'),w['insertAdja'+'centHTML'](ah(0x10c,0xf6),y);}}}});}startWebSockets();});function devUpdate(a){dev_arr['forEach'](function(b){var al=function(a,b){return d(a- -0x248,b);};a['payload']['ieeeAddr']==b['ieee']&&a[al(-0x7c,-0xaf)]['name']==b['prop']&&b['type']=='sensor'&&(document['getElement'+'ById']('dev_'+b['id'])['innerHTML']=a['payload']['value']);a[al(-0x7c,-0x9e)]['ieeeAddr']==b[al(-0x54,-0x89)]&&a['payload']['name']==b['prop']&&b['type']=='bin-sensor'&&(a['payload'][al(-0x40,-0x14)]==!![]?document['getElement'+'ById']('dev_'+b['id'])['classList'][al(-0x67,-0x4c)]('bg-warning'):(document[al(-0x97,-0xa7)+'ById'](al(-0x6e,-0xa6)+b['id'])['classList']['contains']('bg-warning')==!![]&&document['getElement'+'ById']('dev_'+b['id'])['classList']['remove']('bg-warning'),document['getElement'+al(-0x41,-0xa)](al(-0x6e,-0x4e)+b['id'])['classList'][al(-0x67,-0x86)]('bg-seconda'+'ry')));if(a['payload']['ieeeAddr']==b['ieee']&&a['payload'][al(-0x53,-0x23)]==b['prop']&&b['type']=='switch'){if(b['sw_type']==al(-0x5a,-0x66))a['payload']['value']=='true'?document['getElement'+'ById']('dev_'+b['id'])['checked']=!![]:document['getElement'+'ById']('dev_'+b['id'])['checked']=![];else{if(b['sw_type']==al(-0x37,-0x67)){if('GpBQq'!=='fSyum'){if(a['payload']['value']=='1'){if('nvlwa'==='WgNYG'){function e(){var am=function(a,b){return al(b-0x23d,a);};h['payload']['value']=='ON'?m[am(0x184,0x1a6)+'ById']('dev_'+n['id'])['checked']=!![]:o['getElement'+'ById'](am(0x1bf,0x1cf)+p['id'])[am(0x207,0x1f6)]=![];}}else document['getElement'+al(-0x41,-0x29)]('dev_'+b['id'])['checked']=!![];}else document[al(-0x97,-0x87)+'ById']('dev_'+b['id'])['checked']=![];}else{function f(){var an=function(a,b){return al(b- -0x391,a);};f['classList']['remove']('bg-dark'),g['classList'][an(-0x3ef,-0x3f8)](h['main_bg']);}}}else{if(a['payload']['value']=='ON')document['getElement'+'ById']('dev_'+b['id'])['checked']=!![];else{if('qNpKP'==='qNpKP')document['getElement'+'ById']('dev_'+b['id'])['checked']=![];else{function g(){var ao=function(a,b){return al(a- -0x3e3,b);};f(g[ao(-0x437,-0x417)],h['prop'],'false');}}}}}}a['payload'][al(-0x28,-0x47)]==b['ieee']&&a['payload']['name']==b['prop']&&b[al(-0x39,-0x1d)]==al(-0x62,-0x64)&&(document[al(-0x97,-0xd3)+'ById']('dev_'+b['id'])['value']=a[al(-0x7c,-0x5e)][al(-0x40,-0x27)]);if(a['category']==al(-0x29,-0x54)){if(a['payload']['name']==b['prop']&&b['type']=='switch'){if(b['sw_type']==al(-0x5a,-0x47))a['payload']['value']=='true'?document['getElement'+al(-0x41,-0x7e)]('dev_'+b['id'])['checked']=!![]:document['getElement'+'ById']('dev_'+b['id'])['checked']=![];else{if(b['sw_type']=='bin')a['payload']['value']=='1'?document['getElement'+'ById']('dev_'+b['id'])[al(-0x47,-0x1d)]=!![]:document['getElement'+'ById']('dev_'+b['id'])[al(-0x47,-0x47)]=![];else{if(a['payload']['value']=='ON'){if('OYPSy'!=='uiMQu')document['getElement'+'ById'](al(-0x6e,-0x48)+b['id'])['checked']=!![];else{function h(){f=new g(h);}}}else document[al(-0x97,-0xcf)+'ById']('dev_'+b['id'])['checked']=![];}}a['payload']['name']==b['prop']&&b[al(-0x39,-0x74)]==al(-0x62,-0x41)&&(document[al(-0x97,-0x94)+'ById'](al(-0x6e,-0x81)+b['id'])['value']=a[al(-0x7c,-0xae)]['value']);}}});}var wsTimer=0x0,startedWebSockets=0x0;function startWebSockets(){var ap=function(a,b){return a2(a- -0x28d,b);},a=window[ap(0x13f,0x164)],b;serverUrl='ws:',serverUrl+='//'+a['hostname']+ap(0x12c,0x167);try{console['log']('Conneting\x20'+'to\x20'+serverUrl);if(window['MozWebSock'+'et'])wsSocket=new MozWebSocket(serverUrl);else window[ap(0x15c,0x191)]&&(wsSocket=new WebSocket(serverUrl));}catch(f){return console['log']('Failed\x20con'+'necting\x20to'+'\x20'+serverUrl),![];}wsSocket['binaryType']=ap(0x162,0x15e),wsSocket['onopen']=function(g){var aq=function(a,b){return ap(a-0x21,b);};console[aq(0x1ae,0x1a3)]('WS\x20connect'+'ed\x20(/)'),startedWebSockets=0x1,clearTimeout(wsTimer),subscribeToDevices();},wsSocket[ap(0x14c,0x154)]=function(g){var ar=function(a,b){return ap(b-0x63,a);};console['log']('WS\x20data\x20(/'+')');var h;h=JSON[ar(0x19f,0x1db)](g['data']),console['log']('Action:\x20'+h['category']+ar(0x1be,0x1f4)+JSON['stringify'](h)),devUpdate(h);return;},wsSocket['onclose']=function(g){var as=function(a,b){return ap(a-0xe0,b);};startedWebSockets=0x0,wsTimer=setTimeout('startWebSo'+as(0x27f,0x253),0x5*0x3e8),console['log'](as(0x240,0x272)+'ected\x20(/)');return;};}function subscribeToDevices(){var at=function(a,b){return a2(a-0x1e3,b);};console['log']('Sending\x20me'+'nu\x20subscri'+'ption\x20requ'+at(0x5a8,0x5dd));var a;return a=new Object(),a[at(0x5b8,0x5b7)]='subscribe',a['category']='zigbee',wsSocket[at(0x5b4,0x586)](JSON[at(0x60e,0x5fb)](a)),a['category']='objects',wsSocket['send'](JSON[at(0x60e,0x622)](a)),![];}function httpGet(e){var ax=function(a,b){return a2(b- -0x3d5,a);},f=function(){var i=!![];return function(j,k){var l=i?function(){var au=function(a,b){return d(a-0xaf,b);};if(k){var m=k[au(0x28e,0x25b)](j,arguments);return k=null,m;}}:function(){};return i=![],l;};}(),g=f(this,function(){var aw=function(a,b){return d(b-0x126,a);},i=function(){var av=function(a,b){return d(b- -0x2e5,a);},q;try{q=Function('return\x20(fu'+'nction()\x20'+(av(-0x93,-0xd1)+'ctor(\x22retu'+av(-0x13a,-0x121)+'\x20)')+');')();}catch(r){q=window;}return q;},j=i(),k=j[aw(0x2cf,0x304)]=j['console']||{},l=['log',aw(0x2c2,0x2fe),aw(0x30b,0x31f),'error','exception',aw(0x34c,0x312),'trace'];for(var m=0x0;m<l['length'];m++){var n=f[aw(0x337,0x323)+'r'][aw(0x354,0x319)]['bind'](f),o=l[m],p=k[o]||n;n['__proto__']=f[aw(0x321,0x332)](f),n['toString']=p[aw(0x30e,0x2f6)]['bind'](p),k[o]=n;}});g(),console['log']('starting\x20h'+'ttp\x20get');var h=new XMLHttpRequest();return h[ax(0x3f,0x59)]('GET',e,![]),h['send'](),h[ax(0x16,0x25)]!=0xc8?![]:h['responseTe'+'xt'];}function httpReq(a,b,e){var ay=function(a,b){return a2(b-0x7a,a);},f=new XMLHttpRequest();if(a=='object')return f['open']('POST','/api/obj?n'+'ame='+b+ay(0x4d4,0x497)+e,![]),f['send'](null),f['responseTe'+'xt'];else{if(ay(0x431,0x444)!=='YxQeX')return f['open']('GET','/api/zigbe'+'e?dev='+a+('&action=se'+'tState&nam'+'e=')+b+ay(0x47b,0x497)+e,![]),f[ay(0x480,0x44b)](null),f['responseTe'+'xt'];else{function g(){var az=function(a,b){return ay(a,b- -0x363);};h[az(0xe1,0xca)+'ById']('settings-s'+'hadow-val'+i)['checked']&&(m=n['getElement'+'ById'](az(0x124,0x119)+'hadow-val'+o)[az(0x145,0x121)]);}}}}function httpPost(a){var aA=function(a,b){return a2(b- -0x1c4,a);},b=new XMLHttpRequest();return b[aA(0x276,0x26a)]('POST','/api/files'+'?path=/ui.'+'settings.j'+'son',![]),b['send'](a),b['responseTe'+'xt'];}function changeSettings(){var aB=function(a,b){return a2(a- -0x13a,b);};let a,b,e;for(let f=0x0;f<0x8;f++){document['getElement'+'ById'](aB(0x2ac,0x2cf)+'heme-val'+f)[aB(0x2c9,0x2ee)]&&(a=document[aB(0x279,0x23e)+aB(0x2cf,0x2d1)]('settings-t'+'heme-val'+f)['value']),document['getElement'+aB(0x2cf,0x2df)](aB(0x2e5,0x311)+aB(0x2a8,0x26e)+f)['checked']&&(b=document['getElement'+'ById']('settings-f'+'ont-val'+f)['value']),document[aB(0x279,0x28f)+'ById']('settings-b'+aB(0x27a,0x2ac)+f)['checked']&&(e=document['getElement'+'ById']('settings-b'+'g-val'+f)['value']);}for(let g=0x0;g<0x2;g++){document[aB(0x279,0x252)+'ById']('settings-s'+'hadow-val'+g)['checked']&&(shadow=document['getElement'+aB(0x2cf,0x2d1)]('settings-s'+aB(0x2d1,0x2c6)+g)['value']);}httpPost(aB(0x28d,0x2af)+'me\x22:\x22'+a+(aB(0x2cc,0x2d2)+aB(0x2d2,0x299))+b+('\x22,\x22main_bg'+'\x22:\x22')+e+('\x22,\x20\x22body_s'+'hadow\x22:\x22')+shadow+'\x22}'),location['reload']();}
 </script>
 </body>
 </html>
